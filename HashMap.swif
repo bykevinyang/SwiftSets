@@ -1,0 +1,106 @@
+class HashMap<K : Hashable & Comparable, V> : GenericMap<K,V> {
+    var indexes: [Int?] // Make me private later!
+    var keys: [K?]
+    var values: [V?]
+
+    var collisionsMap: LinearMap<K, V>
+    let initialArraySize: Int
+
+    var collisionCount: Int
+
+    init(initialArraySize: Int = 100) {
+        self.initialArraySize = initialArraySize
+
+        self.keys = Array(repeating: nil, count: initialArraySize) // Sadly, nils are not comparble thus we must use -1 as of Swift 3 (https://forums.swift.org/t/comparing-optionals-with-each-other/22444/3)
+        self.values = Array(repeating: nil, count: initialArraySize)
+        self.indexes = Array(repeating: nil, count: initialArraySize)
+
+        self.collisionsMap = LinearMap<K, V>()
+        self.collisionCount = 0
+    }
+
+    func getNumberCollisions()-> Int {
+        return self.collisionCount
+    }
+
+    func suckyHash(_ item: K)->Int {
+        return abs(item.hashValue) % self.initialArraySize
+    }
+
+    override func set(_ k: K, v: V) {
+        let hash = self.suckyHash(k)
+        if self.keys[hash] == nil {
+            self.keys[hash] = k
+            self.values[hash] = v
+            self.indexes[hash] = hash
+        } else {
+            if self.keys[hash] == k {
+                self.values[hash] = v
+            } else {
+                self.collisionsMap.set(k, v: v)
+                self.collisionCount += 1
+            }
+        }
+    }
+
+    override func get(_ k: K)->V? {
+        let hash = suckyHash(k) // Create hash
+        
+        if self.keys[hash] == k {
+            return self.values[hash]
+        } else {
+            self.collisionCount += 1
+            return self.collisionsMap.get(k)
+        }
+    }
+
+    func binSearchKeys(_ k: K)
+    -> (Int?, Int) { // (Index of key, Closest key to the left) 
+                    // Will return nil if key is not found
+        let filteredKeys = self.keys.flatMap { $0 }
+        let filteredValues = self.values.flatMap { $0 }
+        let filteredIndexes = self.indexes.flatMap { $0 }
+
+        var left: Int = 0
+        var right: Int = filteredKeys.count
+        var mid: Int = filteredKeys.count/2
+        var mappedMid: Int = -1
+
+        while left < right {
+            mid = (left + right)/2
+            mappedMid = filteredIndexes[mid]
+
+            if filteredKeys[mappedMid] == k {
+                return (mappedMid, mappedMid)
+            } else if filteredKeys[mid] < k {
+                left = mid + 1
+            } else {
+                right = mid
+            }
+        }
+        
+        return (nil, mappedMid)
+    }
+
+    override var count: Int {
+        return self.keys.count
+    }
+
+    override var description: String {
+        var return_str = "[\n"
+		for i in 0..<keys.count {
+            if let key = keys[i] {
+			    return_str += "\(key): \(self.values[i]!)\n"
+            }
+		}
+        return_str += "]\n"
+        return return_str
+    }
+
+    // For Benchmarking
+    // Blindly adds in a value, only for populating the map
+    override func blindAdd(_ k: K, v: V) {
+        keys.append(k)
+        values.append(v)
+    }
+}
