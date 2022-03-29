@@ -33,5 +33,5 @@ func testLinearSet() {
     print(bigSet.isSubsetOf(smallSet))
 }
 
-// testHashSet()
-testLinearSet()
+testHashSet()
+// testLinearSet()
