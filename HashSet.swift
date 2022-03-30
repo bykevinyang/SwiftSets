@@ -142,8 +142,13 @@ class HashSet: CustomStringConvertible, Sequence, IteratorProtocol{
     func resize(newSize: Int) {
 
         if self.size > newSize {
-            let old_info: [String?] = self.set
+            self.collisionCount = 0
+            self.insertCount = 0
+            self.containsCount = 0
+            self.containCollisionsCount = 0
 
+            let old_info: [String?] = self.allElements()
+            self.collisionSet = LinearSet()
             self.set = Array(repeating: nil, count: newSize)
             self.size = newSize
             for info in old_info {
@@ -151,20 +156,33 @@ class HashSet: CustomStringConvertible, Sequence, IteratorProtocol{
                     self.insert(i)
                 }
             }
+            return
+
         } else if self.size == newSize {
             print("Why would you resize to the same size, lol")
             return
+
         } else {
-            self.set = self.set + Array(repeating: nil, count: newSize - self.count)
+            self.collisionCount = 0
+            self.insertCount = 0
+            self.containsCount = 0
+            self.containCollisionsCount = 0
+
+            let old_info: [String?] = self.allElements()
+            self.collisionSet = LinearSet()
+
+            self.set = Array(repeating: nil, count: newSize)
+
+            self.size = newSize
+
+            print(self.set)
+            for info in old_info {
+                if let i = info {
+                    self.insert(i)
+                }
+            }
+            return 
         }
-
-
-        self.collisionCount = 0
-        self.insertCount = 0
-        self.containsCount = 0
-        self.containCollisionsCount = 0
-        
-        self.size = newSize
     }
 
     var statistics: String {

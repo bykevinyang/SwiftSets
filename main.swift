@@ -136,5 +136,5 @@ func inClassSequenceHashSetTest(){
 // testHashSet()
 // testLinearSet()
 // inClassBasicHashSetTest()
-// inClassResizeHashSetTest()
-inClassSequenceHashSetTest()
+inClassResizeHashSetTest()
+// inClassSequenceHashSetTest()
