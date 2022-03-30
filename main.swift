@@ -14,6 +14,14 @@ func testHashSet() {
     print(smallSet.isSubsetOf(bigSet))
     print(bigSet.isSubsetOf(smallSet))
     print(bigSet.statistics)
+
+    for item in bigSet {
+        print(item)
+    }
+
+    bigSet.resize(newSize: 20)
+    print(bigSet)
+    print(bigSet.statistics)
 }
 
 func testLinearSet() {

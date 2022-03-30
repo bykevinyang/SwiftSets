@@ -1,4 +1,4 @@
-class HashSet: CustomStringConvertible {
+class HashSet: CustomStringConvertible, Sequence, IteratorProtocol{
     var set: [String?] 
     var size: Int
 
@@ -8,6 +8,8 @@ class HashSet: CustomStringConvertible {
     var insertCount: Int
     var containsCount: Int
     var containCollisionsCount: Int
+
+    var iterCount: Int
     
     init(size: Int) {
         self.size = size
@@ -18,7 +20,8 @@ class HashSet: CustomStringConvertible {
         self.insertCount = 0
         self.containsCount = 0
         self.containCollisionsCount = 0
-        // self.totalOperations = 0
+
+        self.iterCount = 0
     }
 
     var count: Int {
@@ -40,6 +43,12 @@ class HashSet: CustomStringConvertible {
         return self.insertCount + self.containsCount 
     }
 
+    var collisionYield: Double {
+        if totalOperations == 0 { return 0.0 }
+
+        return (Double(self.collisionCount) / Double(self.totalOperations)) * 100.0
+    }
+    
     func isEmpty() -> Bool {
         return self.count == 0
     }
@@ -130,6 +139,27 @@ class HashSet: CustomStringConvertible {
         return repr
     }
 
+    func resize(newSize: Int) {
+
+        if self.size > newSize {
+            print("Error: new size is smaller than current size")
+        }
+        
+        if self.size == newSize {
+            print("Why would you resize to the same size, lol")
+            return
+        }
+
+        self.set = self.set + Array(repeating: nil, count: newSize - self.count)
+
+        self.collisionCount = 0
+        self.insertCount = 0
+        self.containsCount = 0
+        self.containCollisionsCount = 0
+        
+        self.size = newSize
+    }
+
     var statistics: String {
         var repr: String = "Hash Map Statistics Report:\n"
         repr += "\tHash Array Size: \(self.size)\n"
@@ -142,7 +172,24 @@ class HashSet: CustomStringConvertible {
         repr += "\tContains Collisions: \(self.containCollisionsCount)\n"
         repr += "\tTotal Operations: \(self.totalOperations)\n"
         repr += "\tTotal Collisions: \(self.collisionCount)\n"
-        repr += "\tCollision Yield (%): \((Double(self.collisionCount) / Double(self.totalOperations)) * 100.0)\n"
+        repr += "\tCollision Yield (%): \(self.collisionYield)%\n"
         return repr
+    }
+
+    func next() -> String? {
+        if isEmpty() {
+            return nil
+        }
+
+        if iterCount == allElements().count {
+            iterCount = 0
+            return nil
+        }
+
+        defer {
+            iterCount += 1
+        }
+
+        return allElements()[iterCount]
     }
 }
