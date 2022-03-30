@@ -2,7 +2,7 @@ func testHashSet() {
     let smallSet = HashSet(size: 5)
     smallSet.insertMany( ["a", "b", "c", "d", "e", "e", "e"] )
     let bigSet = HashSet(size: 10)
-    bigSet.insertMany( ["a", "b", "c", "d", "e", "f", "h", "i", "j"] )
+    bigSet.insertMany( ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"] )
 
     print(bigSet)
     print(smallSet.contains("a"))
@@ -20,7 +20,7 @@ func testLinearSet() {
     let smallSet = LinearSet()
     smallSet.insertMany( ["a", "b", "c", "d", "e", "e", "e"] )
     let bigSet = LinearSet()
-    bigSet.insertMany( ["a", "b", "c", "d", "e", "f", "h", "i", "j"] )
+    bigSet.insertMany( ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"] )
 
     print(bigSet)
     print(smallSet.contains("a"))
