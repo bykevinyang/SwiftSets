@@ -65,7 +65,7 @@ class HashSet: CustomStringConvertible, Sequence, IteratorProtocol{
                 return true
             } else {
                 self.containCollisionsCount += 1
-                print("Collision: \(k) and \(element): \(hash) \(self.set[hash])")
+                // print("Collision: \(k) and \(element): \(hash) \(self.set[hash])")
                 return self.collisionSet.contains(k)
             }
         }
@@ -79,7 +79,7 @@ class HashSet: CustomStringConvertible, Sequence, IteratorProtocol{
             self.set[hash] = s
         } else {
             if self.set[hash] == s { // If it already exists, do nothing
-                print("already exists!, \(s)")
+                // print("already exists!, \(s)")
                 return
             } else {
                 self.collisionSet.insert(s)
@@ -142,15 +142,22 @@ class HashSet: CustomStringConvertible, Sequence, IteratorProtocol{
     func resize(newSize: Int) {
 
         if self.size > newSize {
-            print("Error: new size is smaller than current size")
-        }
-        
-        if self.size == newSize {
+            let old_info: [String?] = self.set
+
+            self.set = Array(repeating: nil, count: newSize)
+            self.size = newSize
+            for info in old_info {
+                if let i = info {
+                    self.insert(i)
+                }
+            }
+        } else if self.size == newSize {
             print("Why would you resize to the same size, lol")
             return
+        } else {
+            self.set = self.set + Array(repeating: nil, count: newSize - self.count)
         }
 
-        self.set = self.set + Array(repeating: nil, count: newSize - self.count)
 
         self.collisionCount = 0
         self.insertCount = 0
